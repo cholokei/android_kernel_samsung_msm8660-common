@@ -739,7 +739,11 @@ static int compact_node(int nid, bool sync)
 }
 
 /* Compact all nodes in the system */
+<<<<<<< HEAD
 int compact_nodes(bool sync)
+=======
+static void compact_nodes(void)
+>>>>>>> 63c5442... mm: compaction: fix echo 1 > compact_memory return error issue
 {
 	int nid;
 
@@ -747,9 +751,13 @@ int compact_nodes(bool sync)
 	lru_add_drain_all();
 
 	for_each_online_node(nid)
+<<<<<<< HEAD
 		compact_node(nid, sync);
 
 	return COMPACT_COMPLETE;
+=======
+		compact_node(nid);
+>>>>>>> 63c5442... mm: compaction: fix echo 1 > compact_memory return error issue
 }
 
 /* The written value is actually unused, all memory is compacted */
@@ -760,7 +768,11 @@ int sysctl_compaction_handler(struct ctl_table *table, int write,
 			void __user *buffer, size_t *length, loff_t *ppos)
 {
 	if (write)
+<<<<<<< HEAD
 		return compact_nodes(true);
+=======
+		compact_nodes();
+>>>>>>> 63c5442... mm: compaction: fix echo 1 > compact_memory return error issue
 
 	return 0;
 }
