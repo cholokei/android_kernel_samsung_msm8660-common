@@ -89,7 +89,8 @@
 #define TSP_PATTERN_TRACTKING
 
 #if SET_DOWNLOAD_BY_GPIO
-#include <mcs8000_download.h>
+//#include <mcs8000_download.h>
+#include "mcs8000_download.h"
 #endif // SET_DOWNLOAD_BY_GPIO
 
 unsigned long saved_rate;					
