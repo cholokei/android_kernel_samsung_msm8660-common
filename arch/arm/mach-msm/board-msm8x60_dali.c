@@ -166,7 +166,7 @@
 #include <mach/tdmb_pdata.h>
 #endif
 
-#include <../../../drivers/bluetooth/bluesleep.c> //SAMSUNG_BT_CONFIG
+//#include <../../../drivers/bluetooth/bluesleep.c> //SAMSUNG_BT_CONFIG
 
 #define MSM_SHARED_RAM_PHYS 0x40000000
 
@@ -6448,7 +6448,9 @@ static struct i2c_board_info motor_i2c_borad_info[] = {
 		I2C_BOARD_INFO("isa1200", 0x48),
 	},
 };
+
 #ifdef CONFIG_SERIAL_MSM_HS
+#if 0 //SAMSUNG_BT_CONFIG
 static int configure_uart_gpios(int on)
 {
 	int ret = 0, i;
@@ -6469,6 +6471,7 @@ static int configure_uart_gpios(int on)
 			msm_gpiomux_put(uart_gpios[i]);
 	return ret;
 }
+#endif
 static struct msm_serial_hs_platform_data msm_uart_dm1_pdata = {
        .inject_rx_on_wakeup = 1,
        .rx_to_inject = 0xFD,
@@ -7064,9 +7067,7 @@ static struct platform_device *early_devices[] __initdata = {
 	&msm_device_dmov_adm1,
 };
 
-#if 0 //SAMSUNG_BT_CONFIG
-#if (defined(CONFIG_MARIMBA_CORE)) && \
-	(defined(CONFIG_MSM_BT_POWER) || defined(CONFIG_MSM_BT_POWER_MODULE))
+#if 0 //(defined(CONFIG_MARIMBA_CORE)) && (defined(CONFIG_MSM_BT_POWER) || defined(CONFIG_MSM_BT_POWER_MODULE))
 
 static int bluetooth_power(int);
 static struct platform_device msm_bt_power_device = {
@@ -7077,43 +7078,14 @@ static struct platform_device msm_bt_power_device = {
 	},
 };
 #endif
-#else
 
-static struct resource bluesleep_resources[] = {
-{
-    .name = "gpio_host_wake",
-    .start = GPIO_BT_HOST_WAKE,
-    .end = GPIO_BT_HOST_WAKE,
-    .flags = IORESOURCE_IO,
-    },
-    {
-    .name = "gpio_ext_wake",
-    .start = GPIO_BT_WAKE,//81,//35,
-    .end = GPIO_BT_WAKE,//81, //35,
-    .flags = IORESOURCE_IO,
-    },
-    {
-    .name = "host_wake",
-    .start = MSM_GPIO_TO_INT(GPIO_BT_HOST_WAKE),
-    .end = MSM_GPIO_TO_INT(GPIO_BT_HOST_WAKE),
-    .flags = IORESOURCE_IRQ,
-    },
+/* Bluetooth */
+#ifdef CONFIG_BT_BCM4330
+static struct platform_device bcm4330_bluetooth_device = {
+	.name = "bcm4330_bluetooth",
+	.id = -1,
 };
-
-
-static struct platform_device msm_bt_power_device = {
-.name = "bt_power",
-};
-
-
-static struct platform_device msm_bluesleep_device = {
-    .name = "bluesleep",
-    .id = -1,
-    .num_resources = ARRAY_SIZE(bluesleep_resources),
-    .resource = bluesleep_resources,
-};
-
-#endif //SAMSUNG_BT_CONFIG
+#endif
 
 static struct platform_device msm_tsens_device = {
 	.name   = "tsens-tm",
@@ -8778,14 +8750,14 @@ static struct platform_device *surf_devices[] __initdata = {
 	&msm_rpm_stat_device,
 #endif
 	&msm_device_vidc,
-#if 0
-(defined(CONFIG_MARIMBA_CORE)) && \
-	(defined(CONFIG_MSM_BT_POWER) || defined(CONFIG_MSM_BT_POWER_MODULE))
+#if 0 //(defined(CONFIG_MARIMBA_CORE)) && (defined(CONFIG_MSM_BT_POWER) || defined(CONFIG_MSM_BT_POWER_MODULE))
 	&msm_bt_power_device,
-#else
-    &msm_bt_power_device,
-    &msm_bluesleep_device, 
 #endif
+
+#if defined (CONFIG_BT_BCM4330)
+    &bcm4330_bluetooth_device,
+#endif
+
 #ifdef CONFIG_SENSORS_MSM_ADC
 	&msm_adc_device,
 #endif
@@ -16073,9 +16045,8 @@ static void __init msm_fb_add_devices(void)
 	msm_fb_register_device("tvout_device", NULL);
 #endif
 }
-#if 0//SAMSUNG_BT_CONFIG
-#if (defined(CONFIG_MARIMBA_CORE)) && \
-	(defined(CONFIG_MSM_BT_POWER) || defined(CONFIG_MSM_BT_POWER_MODULE))
+
+#if 0 // (defined(CONFIG_MARIMBA_CORE)) && (defined(CONFIG_MSM_BT_POWER) || defined(CONFIG_MSM_BT_POWER_MODULE))
 
 static const struct {
 	char *name;
@@ -16413,147 +16384,6 @@ out:
 }
 
 #endif /*CONFIG_MARIMBA_CORE, CONFIG_MSM_BT_POWER, CONFIG_MSM_BT_POWER_MODULE*/
-#else 
-
-
-static uint32_t bt_config_power_on[] = {
-         GPIO_CFG(GPIO_BT_RESET, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_REG_ON, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_WAKE, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_UART_RTS, 1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_UART_CTS, 1, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_UART_RXD, 1, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_UART_TXD, 1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_PCM_DOUT, 1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_PCM_DIN, 1, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA), 
-         GPIO_CFG(GPIO_BT_PCM_SYNC, 1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-         GPIO_CFG(GPIO_BT_PCM_CLK, 1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA), 
-         GPIO_CFG(GPIO_BT_HOST_WAKE, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-};
-
-static uint32_t bt_config_power_off[] = {
-	 GPIO_CFG(GPIO_BT_RESET, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_REG_ON, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_WAKE, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA), 
-	 GPIO_CFG(GPIO_BT_UART_RTS, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_UART_CTS, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_UART_RXD, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_UART_TXD, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_PCM_DOUT, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_PCM_DIN, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA), 
-	 GPIO_CFG(GPIO_BT_PCM_SYNC, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_PCM_CLK, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
-	 GPIO_CFG(GPIO_BT_HOST_WAKE, 0, GPIO_CFG_INPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA), 
-};
-
-struct gpio_low_power_cfg {
-	unsigned gpio;
-	unsigned val;
-};
-
-static struct gpio_low_power_cfg
-bluetooth_gpio_lp_cfgs[] = {
-	{GPIO_BT_RESET, 		0},
-	{GPIO_BT_REG_ON, 	0},
-	{GPIO_BT_UART_RTS, 	0},
-	{GPIO_BT_UART_CTS,    	0},
-	{GPIO_BT_UART_RXD,     	0},
-	{GPIO_BT_UART_TXD,  	0},
-};
-static void 
-cfg_gpios_output_level(struct gpio_low_power_cfg *cfgs, unsigned nelems)
-{
-	unsigned n;
-	int rc;
-
-	printk(KERN_DEBUG "%s\n", __func__);
-
-	for (n = 0; n < nelems; ++n) {
-		rc = gpio_request(cfgs[n].gpio, NULL);
-		if (!rc) {
-			rc = gpio_direction_output(cfgs[n].gpio, cfgs[n].val);
-			printk(KERN_NOTICE "%s: success to gpio %d: %d\n",
-			       __func__, cfgs[n].gpio, rc);
-			gpio_free(cfgs[n].gpio);
-	}
-		else {
-			printk(KERN_NOTICE "%s: failed to gpio %d: %d\n",
-			       __func__, cfgs[n].gpio, rc);
-	        }
-	}
-
-	return;
-}
-
-
-static int bluetooth_power(int on)
-{
-	int rc = 0;
-
-	printk(KERN_DEBUG "%s: power_on(%d)\n", __func__,on);
-
-    if (on) {
-		config_gpio_table_generic(bt_config_power_on, ARRAY_SIZE(bt_config_power_on));
-    
-		rc=gpio_direction_output(GPIO_BT_WAKE, 1);//in bluesleep_probe, already gpio_request called.
-		if (rc) 
-			printk(KERN_NOTICE "%s: failed to gpio %d: %d\n", __func__, GPIO_BT_WAKE, rc);
-		else
-			printk(KERN_NOTICE "%s: success to gpio %d: %d\n", __func__, GPIO_BT_WAKE, rc);
-
-		rc = gpio_request(GPIO_BT_REG_ON, NULL);
-		if (!rc) {
-			rc=gpio_direction_output(GPIO_BT_REG_ON, 1);
-			if (rc) 
-				printk(KERN_NOTICE "%s: failed to gpio %d: %d\n", __func__, GPIO_BT_REG_ON, rc);
-			else
-				printk(KERN_NOTICE "%s: success to gpio %d: %d\n", __func__, GPIO_BT_REG_ON, rc);
-			gpio_free(GPIO_BT_REG_ON);
-		}
-		else {
-			printk(KERN_NOTICE "%s: failed to gpio %d: %d\n", __func__, GPIO_BT_REG_ON, rc);
-		}
-		msleep(50);
-		rc = gpio_request(GPIO_BT_RESET, NULL);
-		if (!rc) {
-			rc=gpio_direction_output(GPIO_BT_RESET, 1);
-			if (rc) 
-				printk(KERN_NOTICE "%s: failed to gpio %d: %d\n", __func__, GPIO_BT_RESET, rc);
-			else
-				printk(KERN_NOTICE "%s: success to gpio %d: %d\n", __func__, GPIO_BT_RESET, rc);				
-			gpio_free(GPIO_BT_RESET);
-		}
-		else {
-			printk(KERN_NOTICE "%s: failed to gpio %d: %d\n", __func__, GPIO_BT_RESET, rc);
-		}
-
-        bluesleep_start();
-    } else {
-        bluesleep_stop();
-
-		config_gpio_table_generic(bt_config_power_off, ARRAY_SIZE(bt_config_power_off));
-		cfg_gpios_output_level(bluetooth_gpio_lp_cfgs, ARRAY_SIZE(bluetooth_gpio_lp_cfgs));
-        }
-
-
-    return 0;
-}
-
-static void __init bt_power_init(void)
-{
-#ifdef CONFIG_BATTERY_SEC
-    if(is_lpm_boot)
-        return;
-#endif
-    pr_info("bt_power_init \n");
-
-    msm_bt_power_device.dev.platform_data = &bluetooth_power;
-        pr_info("bt_gpio_and output : low \n");
-        config_gpio_table_generic(bt_config_power_off, ARRAY_SIZE(bt_config_power_off));
-	cfg_gpios_output_level(bluetooth_gpio_lp_cfgs, ARRAY_SIZE(bluetooth_gpio_lp_cfgs));
-        return;
-}
-#endif /* SAMSUNG_BT_CONFIG */
 
 #if defined (CONFIG_KOR_MODEL_SHV_E120S) || defined (CONFIG_KOR_MODEL_SHV_E120L) || defined (CONFIG_KOR_MODEL_SHV_E120K)
 /* YDA165 AVDD regulator */
@@ -16977,9 +16807,7 @@ static void __init msm8x60_init(struct msm_board_data *board_data)
 #endif
 	msm8x60_init_uart12dm();
 	msm8x60_init_mmc();
-	bt_power_init();
-
-	
+//	bt_power_init();
 #ifdef CONFIG_USB_SWITCH_FSA9480
 		LTE_switch_init();
 		fsa9480_gpio_init();

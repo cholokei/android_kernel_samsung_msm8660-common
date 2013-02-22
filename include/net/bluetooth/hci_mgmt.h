@@ -37,9 +37,6 @@
 #define HCI_DEV_DOWN			4
 #define HCI_DEV_SUSPEND			5
 #define HCI_DEV_RESUME			6
-#ifdef CONFIG_KOR_MODEL_SHV_E150S
-#define HCI_DEV_WRITE			7
-#endif
 
 /* HCI notify events */
 #define HCI_NOTIFY_CONN_ADD		1
@@ -95,7 +92,6 @@ enum {
 	HCI_SERVICE_CACHE,
 	HCI_LINK_KEYS,
 	HCI_DEBUG_KEYS,
-	HCI_UNREGISTER,
 	HCI_LE_SCAN,
 	HCI_SSP_ENABLED,
 	HCI_LE_ENABLED,
@@ -175,22 +171,18 @@ enum {
 
 #define SCO_ESCO_MASK	(ESCO_HV1 | ESCO_HV2 | ESCO_HV3)
 #define EDR_ESCO_MASK	(ESCO_2EV3 | ESCO_3EV3 | ESCO_2EV5 | ESCO_3EV5)
-/* SS_BLUETOOTH(is80.hwang) 2012.03.02 */
-/* change applied EDR ESCO packet */
-#ifdef CONFIG_BT_CSR8811
-#define ALL_ESCO_MASK (SCO_ESCO_MASK | ESCO_EV3 | ESCO_EV4 | ESCO_EV5 | \
-ESCO_2EV3 /*EDR_ESCO_MASK*/)
-#else
 #define ALL_ESCO_MASK	(SCO_ESCO_MASK | ESCO_EV3 | ESCO_EV4 | ESCO_EV5 | \
 			EDR_ESCO_MASK)
-#endif
-/* SS_BLUEZ_BT(is80.hwang) End */
+
 /* wbs */
 /* Air Coding Format */
 #define ACF_TRANS	0x0003;
 
 /* Retransmission Effort */
+#define RE_NO_RETRANS		0x00;
+#define RE_POWER_CONSUMP	0x01;
 #define RE_LINK_QUALITY		0x02;
+#define RE_DONT_CARE		0xFF;
 
 /* ACL flags */
 #define ACL_START_NO_FLUSH	0x00
