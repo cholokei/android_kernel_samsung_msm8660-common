@@ -2239,8 +2239,11 @@ void mdp4_mixer_blend_setup(int mixer)
 		if (mdp_rev < MDP_REV_42 && mixer == MDP4_MIXER1 &&
 			s_pipe->pipe_type == OVERLAY_TYPE_VIDEO &&
 			mdp4_overlay_format2type(s_pipe->src_format) == OVERLAY_TYPE_VIDEO) {
+#ifndef CONFIG_TARGET_LOCALE_KOR
 			blend->op = MDP4_BLEND_BG_ALPHA_BG_PIXEL | MDP4_BLEND_FG_INV_ALPHA | MDP4_BLEND_FG_ALPHA_BG_PIXEL;	//for ARGB_8888
-//			blend->op = MDP4_BLEND_FG_INV_ALPHA | MDP4_BLEND_FG_ALPHA_FG_PIXEL;		//for RGB_565
+#else
+			blend->op = MDP4_BLEND_FG_INV_ALPHA | MDP4_BLEND_FG_ALPHA_FG_PIXEL;		//for RGB_565
+#endif
 		}
 
 		if (s_pipe->transp != MDP_TRANSP_NOP) {
