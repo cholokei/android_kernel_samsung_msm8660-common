@@ -2065,7 +2065,7 @@ config MSM_PM8X60
 	bool
 
 config MSM_EVENT_TIMER
-    default n
+    default y
 	bool "Event timer"
 	help
 		This option enables a modules that manages a list of event timers that
@@ -2136,11 +2136,6 @@ config CLOCK_MAP
 	  A bitmap is maintained in non-cached memory and each registered
 	  clock gets a unique id. If the bitmap has that bit set the clock
 	  is enabled, otherwise the clock is disabled.
-
-config MSM_SLEEP_STATS
-	bool "Enable exporting of MSM sleep stats to userspace"
-	depends on CPU_IDLE
-	default n
 
 config MSM_SLEEP_STATS_DEVICE
 	bool "Enable exporting of MSM sleep device stats to userspace"

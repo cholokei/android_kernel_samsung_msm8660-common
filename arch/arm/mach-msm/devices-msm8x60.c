@@ -186,10 +186,6 @@ void __init msm8x60_init_irq(void)
 	msm_mpm_irq_extn_init();
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE, (void *)MSM_QGIC_CPU_BASE);
 
-#ifdef CONFIG_TARGET_LOCALE_KOR
-	/* Edge trigger PPIs except AVS_SVICINT and AVS_SVICINTSWDONE */
-	writel(0xFFFFD7FF, MSM_QGIC_DIST_BASE + GIC_DIST_CONFIG + 4);
-#endif
 }
 
 #define MSM_LPASS_QDSP6SS_PHYS 0x28800000
