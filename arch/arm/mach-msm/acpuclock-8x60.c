@@ -150,7 +150,11 @@ struct clkctl_acpu_speed {
 		.vectors = &(struct msm_bus_vectors){ \
 			.src = MSM_BUS_MASTER_AMPSS_M0, \
 			.dst = MSM_BUS_SLAVE_EBI_CH0, \
+#ifndef CONFIG_TARGET_LOCALE_KOR
 			.ib = (_bw) * 1000000ULL, \
+#else
+			.ib = (_bw) * 1000000UL, \
+#endif
 			.ab = 0, \
 		}, \
 		.num_paths = 1, \
