@@ -18,6 +18,7 @@
 
 #include "msm_fb.h"
 #include "mipi_dsi.h"
+#include "mdp4.h"
 #include "mipi_s6e8aa0_hd720.h"
 
 static struct msm_panel_info pinfo;
