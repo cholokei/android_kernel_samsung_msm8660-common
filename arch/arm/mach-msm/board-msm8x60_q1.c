@@ -7219,7 +7219,9 @@ static int max17040_low_batt_cb(void)
 static struct max17040_platform_data max17040_pdata = {
 	.hw_init = max17040_hw_init,
 	.low_batt_cb = max17040_low_batt_cb,
-#if defined(CONFIG_KOR_MODEL_SHV_E160S) || defined (CONFIG_JPN_MODEL_SC_05D)
+#if defined(CONFIG_KOR_MODEL_SHV_E160S)
+	.rcomp_value = 0xff1f,
+#elif defined(CONFIG_JPN_MODEL_SC_05D)
 	.rcomp_value = 0xe71f,
 #elif defined(CONFIG_KOR_MODEL_SHV_E160K)
 	.rcomp_value = 0xff1f,
