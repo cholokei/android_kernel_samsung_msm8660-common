@@ -38,6 +38,10 @@
 #include "msm_watchdog.h"
 #include "timer.h"
 
+#ifdef CONFIG_KEXEC_HARDBOOT
+#include <asm/kexec.h>
+#endif
+
 #define WDT0_RST	0x38
 #define WDT0_EN		0x40
 #define WDT0_BARK_TIME	0x4C
@@ -327,6 +331,14 @@ unsigned int sec_get_lpm_mode(void)
 }
 #endif
 
+#ifdef CONFIG_KEXEC_HARDBOOT
+void msm_kexec_hardboot(void)
+{
+	/* Set PM8XXX PMIC to reset on power off. */
+	pm8xxx_reset_pwr_off(1);
+}
+#endif
+
 static int __init msm_restart_init(void)
 {
 	int rc;
@@ -347,6 +359,9 @@ static int __init msm_restart_init(void)
 	msm_tmr0_base = msm_timer_get_timer0_base();
 	restart_reason = MSM_IMEM_BASE + RESTART_REASON_ADDR;
 	pm_power_off = msm_power_off;
+#ifdef CONFIG_KEXEC_HARDBOOT
+	kexec_hardboot_hook = msm_kexec_hardboot;
+#endif
 
 	if (pmic_reset_irq != 0) {
 		rc = request_any_context_irq(pmic_reset_irq,

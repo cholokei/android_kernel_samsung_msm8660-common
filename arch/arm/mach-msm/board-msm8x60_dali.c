@@ -183,6 +183,10 @@
 #include <linux/video/sec_mipi_lcd_esd_refresh.h>
 #endif
 
+#ifdef CONFIG_KEXEC_HARDBOOT
+#include <asm/kexec.h>
+#endif
+
 #define MSM_SHARED_RAM_PHYS 0x40000000
 
 #ifdef CONFIG_OPTICAL_GP2A
@@ -10062,6 +10066,10 @@ static void __init msm8x60_reserve(void)
 		ram_console_resource[0].start = RAM_CONSOLE_START;
 		ram_console_resource[0].end = RAM_CONSOLE_START+RAM_CONSOLE_SIZE-1;
 	}
+#endif
+
+#ifdef CONFIG_KEXEC_HARDBOOT
+	memblock_remove(KEXEC_HB_PAGE_ADDR, SZ_4K);
 #endif
 }
 
