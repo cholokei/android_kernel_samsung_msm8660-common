@@ -91,8 +91,6 @@ hardboot:
 #if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_MSM8X60)
 #if defined(CONFIG_ARCH_MSM8960)
 #define MSM_TLMM_PHYS MSM8960_TLMM_PHYS
-#elif defined(CONFIG_ARCH_MSM8X60)
-#define MSM_TLMM_PHYS MSM_TLMM_PHYS
 #endif
 	/* Hard reset via PMIC, decompressor jumps to kernel. */
 	ldr	r0, =MSM_TLMM_PHYS
