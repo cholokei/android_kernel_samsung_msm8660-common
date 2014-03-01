@@ -3987,7 +3987,8 @@ unsigned char hdmi_is_primary;
 
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
 #define RAM_CONSOLE_START          0x77800000
-#define RAM_CONSOLE_SIZE            SZ_1M
+/* Exclude the last 4 kB to preserve the kexec hardboot page. */
+#define RAM_CONSOLE_SIZE            (SZ_1M-SZ_4K)
 #endif
 
 #define MSM_SMI_BASE          0x38000000
