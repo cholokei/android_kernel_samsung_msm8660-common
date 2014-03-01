@@ -6,7 +6,7 @@
 
 #ifdef CONFIG_KEXEC_HARDBOOT
 #include <asm/memory.h>
-#ifdef CONFIG_ARCH_MSM8960
+#if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_MSM8X60)
 #include <mach/msm_iomap.h>
 #endif
 #endif
@@ -88,9 +88,14 @@ hardboot:
 	ldr	r1, =KEXEC_HB_PAGE_MAGIC
 	str	r1, [r0]
 
-#ifdef CONFIG_ARCH_MSM8960
+#if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_MSM8X60)
+#if defined(CONFIG_ARCH_MSM8960)
+#define MSM_TLMM_PHYS MSM8960_TLMM_PHYS
+#elif defined(CONFIG_ARCH_MSM8X60)
+#define MSM_TLMM_PHYS MSM_TLMM_PHYS
+#endif
 	/* Hard reset via PMIC, decompressor jumps to kernel. */
-	ldr	r0, =MSM8960_TLMM_PHYS
+	ldr	r0, =MSM_TLMM_PHYS
 	mov	r1, #0
 	str	r1, [r0, #0x820]  @ PSHOLD_CTL_SU
 loop:	b	loop
