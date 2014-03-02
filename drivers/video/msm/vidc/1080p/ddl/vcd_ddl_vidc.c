@@ -554,12 +554,7 @@ void ddl_vidc_encode_init_codec(struct ddl_client_context *ddl)
 	u32 index, luma[4], chroma[4], hdr_ext_control = false;
 	const u32 recon_bufs = 4;
 	u32 h263_cpfc_enable = false;
-<<<<<<< HEAD
 	u32 scaled_frame_rate;
-=======
-	u32 scaled_frame_rate, ltr_enable;
-	u32 pic_order_count = false;
->>>>>>> de85120... msm: vidc: enable pic_order_cnt_type for H264 encoding
 
 	ddl_vidc_encode_set_profile_level(ddl);
 	vidc_1080p_set_encode_frame_size(encoder->frame_size.width,
@@ -580,7 +575,6 @@ void ddl_vidc_encode_init_codec(struct ddl_client_context *ddl)
 		(DDL_FRAMERATE_SCALE(DDL_INITIAL_FRAME_RATE)
 		 != scaled_frame_rate))
 		h263_cpfc_enable = true;
-<<<<<<< HEAD
 
 /* MMRND_AVRC. Start */
 /* added for MMS plus header issue */
@@ -590,31 +584,12 @@ void ddl_vidc_encode_init_codec(struct ddl_client_context *ddl)
             h263_cpfc_enable = false;
 /* MMRND_AVRC. End */
 
-=======
-	if (encoder->codec.codec == VCD_CODEC_H264)
-		pic_order_count = true;
-
-	ltr_enable = DDL_IS_LTR_ENABLED(encoder);
-	DDL_MSG_HIGH("ltr_enable = %u", ltr_enable);
->>>>>>> de85120... msm: vidc: enable pic_order_cnt_type for H264 encoding
 	vidc_sm_set_extended_encoder_control(&ddl->shared_mem
 		[ddl->command_channel], hdr_ext_control,
 		r_cframe_skip, false, 0,
 		h263_cpfc_enable, encoder->sps_pps.sps_pps_for_idr_enable_flag,
-<<<<<<< HEAD
 		encoder->closed_gop,
 		encoder->bitstream_restrict_enable);
-=======
-		pic_order_count, encoder->closed_gop, encoder->
-		avc_delimiter_enable, encoder->vui_timinginfo_enable,
-		encoder->bitstream_restrict_enable, ltr_enable);
-	if (encoder->vui_timinginfo_enable) {
-		vidc_sm_set_h264_encoder_timing_info(
-			&ddl->shared_mem[ddl->command_channel],
-			DDL_FRAMERATE_SCALE_FACTOR,
-			scaled_frame_rate << 1);
-	}
->>>>>>> de85120... msm: vidc: enable pic_order_cnt_type for H264 encoding
 	vidc_sm_set_encoder_init_rc_value(&ddl->shared_mem
 		[ddl->command_channel],
 		encoder->target_bit_rate.target_bitrate);
