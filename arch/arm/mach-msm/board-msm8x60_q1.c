@@ -4395,7 +4395,7 @@ unsigned char hdmi_is_primary;
 #endif
 #define MSM_ION_CAMERA_SIZE	0x1200000 /* 18MB */
 #define MSM_ION_MM_FW_SIZE	0x200000 /* (2MB) */
-#define MSM_ION_MM_SIZE		0x3600000 /* (54MB) Must be a multiple of 64K */
+#define MSM_ION_MM_SIZE		0x3800000 /* (56MB) Must be a multiple of 64K */
 #define MSM_ION_MFC_SIZE	SZ_8K
 #define MSM_ION_WB_SIZE		(MSM_PMEM_ADSP_SIZE-MSM_ION_CAMERA_SIZE) /* 24MB, ICS : 30MB */
 #define MSM_ION_QSECOM_SIZE	0x600000 /* (6MB) */
